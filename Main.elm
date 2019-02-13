@@ -21,7 +21,7 @@ type alias Entry =
     , toEdit : Bool
     }
 
--- Model should be Dict Counter Entry
+
 type alias Model=
       { entries : List Entry
       , field : String
@@ -57,7 +57,7 @@ update msg model =
             if String.words str == [""] then (model, Cmd.none)
             else  let
                     id = List.length model.entries
-                    newEntry = Entry str False (id + 1) False 
+                    newEntry = Entry str False (id + 1) False
                     newEntries = (::) newEntry model.entries
                 in
                     ({ model | entries = newEntries, field = ""}
