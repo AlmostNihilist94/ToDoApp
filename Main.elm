@@ -49,6 +49,8 @@ type Msg = Add String
         | ToggleCompleted Int
 
 
+
+
 update: Msg -> Model -> (Model, Cmd msg)
 update msg model =
       case msg of
@@ -71,15 +73,24 @@ update msg model =
                 , Cmd.none)
 
         UpdateEntry str idToBeUpdated ->
+          if String.words model.editField == [""]
+              then
+                    ({model
+                    | entries =
+                    List.map
+                    (\e -> if e.postId == idToBeUpdated then {e | toEdit = False} else e)
+                    model.entries}
+                    , Cmd.none)
+          else
               let
                   updateToEdit e =
                       if e.postId == idToBeUpdated then
-                        {e | post = model.editField, toEdit=False, completed=False}
+                          {e | post = model.editField, toEdit=False, completed=False}
                       else
-                        e
+                          e
               in
-                ({model | entries = List.map updateToEdit model.entries, field = ""},
-                Cmd.none)
+                  ({model | entries = List.map updateToEdit model.entries, field = "", editField = ""},
+                  Cmd.none)
 
         Edit idToBeUpdated ->
               let
