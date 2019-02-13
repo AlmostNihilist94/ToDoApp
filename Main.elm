@@ -19,7 +19,6 @@ type alias Entry =
     , completed : Bool
     , postId : Int
     , toEdit : Bool
-    , changeTo : String
     }
 
 -- Model should be Dict Counter Entry
@@ -43,7 +42,7 @@ init _ =
 type Msg = Add String
         |  Delete Int
         | Change String
-        | UpdateEntry String Int
+        | UpdateEntry Int
         | Edit Int
         | UpdateChangeTo String
         | ToggleCompleted Int
@@ -58,7 +57,7 @@ update msg model =
             if String.words str == [""] then (model, Cmd.none)
             else  let
                     id = List.length model.entries
-                    newEntry = Entry str False (id + 1) False ""
+                    newEntry = Entry str False (id + 1) False 
                     newEntries = (::) newEntry model.entries
                 in
                     ({ model | entries = newEntries, field = ""}
@@ -72,7 +71,7 @@ update msg model =
                 ({model | field = str}
                 , Cmd.none)
 
-        UpdateEntry str idToBeUpdated ->
+        UpdateEntry idToBeUpdated ->
           if String.words model.editField == [""]
               then
                     ({model
@@ -168,7 +167,7 @@ renderEditBox entry =
                 , onInput UpdateChangeTo
                 ]
                 []
-          ,     button [onClick <| UpdateEntry entry.changeTo <| entry.postId] [text "Update"]
+          ,     button [onClick <| UpdateEntry <| entry.postId] [text "Update"]
           ]
 
 renderTextBox entry =
